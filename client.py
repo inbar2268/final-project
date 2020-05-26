@@ -33,14 +33,19 @@ def client_recv(my_socket):
             pub.sendMessage("update4", msg="server response " + data)
         if tmp[0] == "5":
             pub.sendMessage("update5", msg="server response " + data)
+        if tmp[0] == "6":
+            pub.sendMessage("update6", msg="server response " + data)
 
 
 def client_send():
     print("start client")
     my_socket = socket()
+    f = open('configu.txt', 'r')
+    ip = f.read()
+    f.close
 
     try:
-        my_socket.connect(("127.0.0.1", 1233))  # create socket
+        my_socket.connect((str(ip), 1233))  # create socket
         recv_thread = Thread(target=client_recv, args=(my_socket,))
         recv_thread.start()
     except Exception as msg:

@@ -271,6 +271,8 @@ class MainRps(wx.Frame):
         if MainRps.score == 3 or MainRps.rScore == 3:
             if MainRps.score == 3:
                 self.msg_lbl.SetLabelText("You are the Winner")
+                msg = "2,win"
+                conn_q.put(msg)
             else:
                 lbl = self.rivalName + " is the Winner"
                 self.msg_lbl.SetLabelText(lbl)

@@ -87,7 +87,7 @@ class XOPanel(wx.Panel):
         a = self.check_row()
         if a[0] is True:  # one of the players won
             if a[1] == self.symbol:
-                self.msg_lbl.SetValue("you are the winner")
+                self.win()
             else:
                 self.msg_lbl.SetValue(self.rivalName + " is the winner")
             self.win_line(a[2])
@@ -95,7 +95,7 @@ class XOPanel(wx.Panel):
         b = self.check_column()
         if b[0] is True:  # one of the players won
             if b[1] == self.symbol:
-                self.msg_lbl.SetValue("you are the winner")
+                self.win()
             else:
                 self.msg_lbl.SetValue(self.rivalName + " is the winner")
             self.win_line(b[2])
@@ -103,7 +103,7 @@ class XOPanel(wx.Panel):
         c = self.check_diagonal()
         if c[0] is True:  # one of the players won
             if c[1] == self.symbol:
-                self.msg_lbl.SetValue("you are the winner")
+                self.win()
             else:
                 self.msg_lbl.SetValue(self.rivalName + " is the winner")
             self.win_line(c[2])
@@ -116,6 +116,11 @@ class XOPanel(wx.Panel):
 
         if tie is True and a[0] is False and b[0] is False and c[0] is False:
             self.msg_lbl.SetValue("The game ended in a tie")
+
+    def win(self):
+        self.msg_lbl.SetValue("you are the winner")
+        msg = "1,win"
+        conn_q.put(msg)
 
     def redraw(self):  # redraw the windows - create EVT_PAINT
         self.Hide()  # redraw the board

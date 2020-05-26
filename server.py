@@ -22,9 +22,12 @@ class HandleClient(Thread):
         self.client_socket = client_socket
         HandleClient.clients.append(client_socket)
         # connect to data base
-        self.conn = sqlite3.connect('users.db', timeout=10,
-                                    check_same_thread=False)
-        self.users = users1.Users(self.conn)  # data base table
+        self.conn1 = sqlite3.connect('users.db', timeout=10,
+                                     check_same_thread=False)
+        self.users = users1.Users(self.conn1)  # data base table
+        self.conn2 = sqlite3.connect('wins.db', timeout=10,
+                                     check_same_thread=False)
+        self.wins = users1.Wins(self.conn2)  # data base table
         data = "1,connect"
         self.client_socket.send(data.encode('ascii'))
 
@@ -54,7 +57,7 @@ class HandleClient(Thread):
 
             elif msg[1] == "xo":  # user is trying connect to tic tac toe game
                 playing = False
-                cursor = self.conn.execute("SELECT * from USERS")
+                cursor = self.conn1.execute("SELECT * from USERS")
                 for row in cursor:
                     if row[2] == msg[2]:
                         if row[4] == "1":  # check if user is already playing
@@ -85,7 +88,7 @@ class HandleClient(Thread):
             elif msg[1] == "rps":
                 # user is trying connect to rock paper scissors game
                 playing = False
-                cursor = self.conn.execute("SELECT * from USERS")
+                cursor = self.conn1.execute("SELECT * from USERS")
                 for row in cursor:
                     if row[2] == msg[2]:
                         if row[4] == "1":  # check if user is already playing
@@ -128,12 +131,21 @@ class HandleClient(Thread):
                 if msg[1] == "insertUser":  # insert new user to data base
                     self.users.insert_user(msg[2], msg[3], msg[4])
                     data = msg[0] + ",ok"
+                    self.wins.insert_player(msg[4])
 
                 if msg[1] == "clientName":  # get user's nickname
                     data = client_info_str
                     name = msg[2]
                     n = [self.client_socket, name]
                     HandleClient.clientsAndNames.append(n)
+
+                if msg[1] == "bestPlayers":  # send 3 best players
+                    xo_players_list = self.find_best_players(1)
+                    print("players_list " + str(xo_players_list))
+                    rps_players_list = self.find_best_players(2)
+                    print("players_list " + str(rps_players_list))
+                    data = "6,bestPlayers," + str(xo_players_list) + "," \
+                           + str(rps_players_list)
 
                 print("server got: " + str(client_info_str))
                 print("server sent: " + str(data))
@@ -147,7 +159,7 @@ class HandleClient(Thread):
 
     def check1(self, tup):  # check login
         # executes an SQL statement.
-        cursor = self.conn.execute("SELECT * from USERS")
+        cursor = self.conn1.execute("SELECT * from USERS")
         exist = False
         name = ""
         online = ""
@@ -162,7 +174,7 @@ class HandleClient(Thread):
         return data
 
     def check2(self, user, name):  # check sign up
-        cursor = self.conn.execute("SELECT * from USERS")
+        cursor = self.conn1.execute("SELECT * from USERS")
         valid = True
         name_valid = 1
         user_valid = 1
@@ -175,6 +187,37 @@ class HandleClient(Thread):
                 name_valid = 0
         t = [valid, user_valid, name_valid]
         return t
+
+    def find_best_players(self, num):  # find best players in each game
+        players_list = []
+        cursor = self.conn2.execute("SELECT * from WINS")
+        for row in cursor:
+            if players_list.__len__() is 0:
+                players_list.append([row[0], row[num]])
+            else:
+                element = self.check_places(players_list, row[num])
+                players_list.insert(element, [row[0], row[num]])
+
+        if players_list.__len__() <= 3:
+            str_players = ""
+            for i in players_list:
+                str_players = str_players + i[0] + "." + i[1] + "."
+            return str_players
+        else:
+            str_players = ""
+            for i in range(3):
+                str_players = str_players + str(players_list[i][0]) \
+                              + "." + str(players_list[i][1]) + "."
+            return str_players
+
+    def check_places(self, players_list, win):
+        counter = 0
+        for i in players_list:
+            if i[1] <= win:
+                return counter
+            else:
+                counter = counter + 1
+        return counter
 
     # remove client from clientsAndNames list and update data base
     def close_client(self, client_socket):

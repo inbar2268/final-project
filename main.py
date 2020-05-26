@@ -4,12 +4,14 @@ import ticTacToe
 import rockPaperScissors
 from client import *
 from time import sleep
+import wx.grid as grid
+import wx.lib.mixins.gridlabelrenderer as glr
 
 
 # signUp
 class SignUp(wx.Frame):
     def __init__(self):  # create sign up frame
-        wx.Frame.__init__(self, None, title="Sign Up", size=(430, 300),
+        wx.Frame.__init__(self, None, title="Sign Up", size=(430, 320),
                           pos=(185, 130))
         self.SetBackgroundColour((153, 255, 153))
 
@@ -31,7 +33,7 @@ class SignUp(wx.Frame):
         row6.Add(self.name)
         row6.AddSpacer(45)
         lbl4 = wx.StaticText(self, label=":Nickname")
-        lbl4.SetFont(wx.Font(14, wx.SWISS, wx.NORMAL, wx.LIGHT))
+        lbl4.SetFont(wx.Font(16, wx.ROMAN, wx.NORMAL, wx.BOLD))
         row6.Add(lbl4)
         col.Add(row6)
 
@@ -49,9 +51,9 @@ class SignUp(wx.Frame):
         self.user = wx.TextCtrl(self, size=wx.Size(110, 22))
         self.user.Bind(wx.EVT_SET_FOCUS, self.remove_lbl2)
         row1.Add(self.user)
-        row1.AddSpacer(40)  # space between StaticText and TextCtrl
+        row1.AddSpacer(45)  # space between StaticText and TextCtrl
         lbl2 = wx.StaticText(self, label=":Username")
-        lbl2.SetFont(wx.Font(14, wx.SWISS, wx.NORMAL, wx.LIGHT))
+        lbl2.SetFont(wx.Font(16, wx.ROMAN, wx.NORMAL, wx.BOLD))
         row1.Add(lbl2)
         col.Add(row1)
 
@@ -69,10 +71,10 @@ class SignUp(wx.Frame):
         self.password = wx.TextCtrl(self, size=wx.Size(110, 22),
                                     style=wx.TE_PASSWORD)
         row2.Add(self.password)
-        row2.AddSpacer(42)  # space between StaticText and TextCtrl
+        row2.AddSpacer(45)  # space between StaticText and TextCtrl
         lbl4 = wx.StaticText(self, label=":Password")
         self.password.Bind(wx.EVT_SET_FOCUS, self.remove_lbl1)
-        lbl4.SetFont(wx.Font(14, wx.SWISS, wx.NORMAL, wx.LIGHT))
+        lbl4.SetFont(wx.Font(16, wx.ROMAN, wx.NORMAL, wx.BOLD))
         row2.Add(lbl4)
         col.Add(row2)
 
@@ -242,16 +244,16 @@ class Login(wx.Frame):
         self.SetBackgroundColour((181, 253, 246))
 
         col = wx.BoxSizer(wx.VERTICAL)
-        col.AddSpacer(60)
+        col.AddSpacer(50)
         row = wx.BoxSizer(wx.HORIZONTAL)
-        row.AddSpacer(80)
+        row.AddSpacer(235)
 
         lbl1 = wx.StaticText(self, label="login")
-        lbl1.SetFont(wx.Font(22, wx.ROMAN, wx.NORMAL, wx.BOLD))
+        lbl1.SetFont(wx.Font(30, wx.FONTFAMILY_MODERN, wx.NORMAL, wx.BOLD))
         row.Add(lbl1)
         col.Add(row)
 
-        col.AddSpacer(20)
+        col.AddSpacer(30)
         row1 = wx.BoxSizer(wx.HORIZONTAL)
         row1.AddSpacer(80)
         self.user = wx.TextCtrl(self, size=wx.Size(110, 25))
@@ -259,7 +261,7 @@ class Login(wx.Frame):
         row1.Add(self.user)
         row1.AddSpacer(40)  # space between StaticText and TextCtrl
         lbl2 = wx.StaticText(self, label=":Username")
-        lbl2.SetFont(wx.Font(16, wx.SWISS, wx.NORMAL, wx.LIGHT))
+        lbl2.SetFont(wx.Font(16, wx.FONTFAMILY_MODERN, wx.NORMAL, wx.BOLD))
         row1.Add(lbl2)
         col.Add(row1)
 
@@ -272,7 +274,7 @@ class Login(wx.Frame):
         row2.AddSpacer(42)  # space between StaticText and TextCtrl
         lbl3 = wx.StaticText(self, label=":Password")
         self.password.Bind(wx.EVT_SET_FOCUS, self.remove_lbl1)
-        lbl3.SetFont(wx.Font(16, wx.SWISS, wx.NORMAL, wx.LIGHT))
+        lbl3.SetFont(wx.Font(16, wx.FONTFAMILY_MODERN, wx.NORMAL, wx.BOLD))
         row2.Add(lbl3)
         col.Add(row2)
 
@@ -341,7 +343,6 @@ class Login(wx.Frame):
 # MainFrame
 class MainFrame(wx.Frame):
     name = ""
-
     def __init__(self):  # create main Frame (main menu)
         wx.Frame.__init__(self, None, title="CHAT PARTY", size=(500, 450),
                           pos=(150, 100))
@@ -350,12 +351,12 @@ class MainFrame(wx.Frame):
         self.Bind(wx.EVT_CLOSE, self.close_frame)
 
         col = wx.BoxSizer(wx.VERTICAL)
-        col.AddSpacer(60)
+        col.AddSpacer(55)
         row = wx.BoxSizer(wx.HORIZONTAL)
-        row.AddSpacer(150)  # space between StaticText and TextCtrl
+        row.AddSpacer(50)  # space between StaticText and TextCtrl
 
         lbl1 = wx.StaticText(self, label="Chat party")
-        lbl1.SetFont(wx.Font(24, wx.SWISS, wx.NORMAL, wx.BOLD))
+        lbl1.SetFont(wx.Font(38, wx.FONTFAMILY_ROMAN, wx.NORMAL, wx.BOLD))
         row.Add(lbl1)
         col.Add(row)
 
@@ -427,7 +428,7 @@ class MainFrame(wx.Frame):
 
         else:
             info = tmp.split(",")
-            if info[1] == "connect":   # connection with server succeeded
+            if info[1] == "connect":  # connection with server succeeded
                 self.connect.Hide()
                 self.signUp.Enable()
                 self.login.Enable()
@@ -469,25 +470,25 @@ class Games(wx.Frame):
         self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
 
         col = wx.BoxSizer(wx.VERTICAL)
-        col.AddSpacer(50)
+        col.AddSpacer(35)
         row = wx.BoxSizer(wx.HORIZONTAL)
-        row.AddSpacer(80)
+        row.AddSpacer(70)
 
         lbl = wx.StaticText(self, label="choose a game to play")
-        lbl.SetFont(wx.Font(22, wx.SWISS, wx.NORMAL, wx.BOLD))
+        lbl.SetFont(wx.Font(30, wx.FONTFAMILY_ROMAN, wx.FONTSTYLE_ITALIC, wx.BOLD))
         row.Add(lbl)
         col.Add(row)
 
-        col.AddSpacer(40)
+        col.AddSpacer(50)
         row1 = wx.BoxSizer(wx.HORIZONTAL)
-        row1.AddSpacer(110)
+        row1.AddSpacer(60)
         self.xo = wx.Button(self, label="tic tac toe")
-        self.xo.SetFont(wx.Font(18, wx.SWISS, wx.NORMAL, wx.BOLD))
+        self.xo.SetFont(wx.Font(16, wx.FONTFAMILY_TELETYPE, wx.NORMAL, wx.BOLD))
         self.xo.Bind(wx.EVT_BUTTON, self.tic_tac_toe)
         row1.Add(self.xo)
 
         row1.AddSpacer(20)
-        self.enter1 = wx.Button(self, label="enter game", size=wx.Size(70, 45))
+        self.enter1 = wx.Button(self, label="enter game", size=wx.Size(70, 35))
         self.enter1.Bind(wx.EVT_BUTTON, self.open_xo)
         row1.Add(self.enter1)
         self.enter1.Disable()
@@ -497,16 +498,25 @@ class Games(wx.Frame):
         row2 = wx.BoxSizer(wx.HORIZONTAL)
         row2.AddSpacer(60)
         self.rps = wx.Button(self, label="rock paper scissors")
-        self.rps.SetFont(wx.Font(18, wx.SWISS, wx.NORMAL, wx.BOLD))
+        self.rps.SetFont(wx.Font(16, wx.FONTFAMILY_TELETYPE, wx.NORMAL, wx.BOLD))
         self.rps.Bind(wx.EVT_BUTTON, self.rock_paper_scissors)
         row2.Add(self.rps)
 
         row2.AddSpacer(20)
-        self.enter2 = wx.Button(self, label="enter game", size=wx.Size(70, 45))
+        self.enter2 = wx.Button(self, label="enter game", size=wx.Size(70, 35))
         self.enter2.Bind(wx.EVT_BUTTON, self.open_rps)
         row2.Add(self.enter2)
         self.enter2.Disable()
         col.Add(row2)
+
+        col.AddSpacer(40)
+        row3 = wx.BoxSizer(wx.HORIZONTAL)
+        row3.AddSpacer(60)
+        best = wx.Button(self, label="best scores")
+        best.SetFont(wx.Font(16, wx.FONTFAMILY_TELETYPE, wx.NORMAL, wx.BOLD))
+        best.Bind(wx.EVT_BUTTON, self.best_players)
+        row3.Add(best)
+        col.Add(row3)
 
         self.SetSizer(col)
         self.Show()
@@ -560,10 +570,100 @@ class Games(wx.Frame):
         conn_q.put(msg)
 
     # trying open rock paper scissors frame
-    def rock_paper_scissors(self, event):  #
+    def rock_paper_scissors(self, event):
         msg = "5,rps," + self.name
         conn_q.put(msg)
 
+    def best_players(self, event):
+        BestPlayers()
+        msg = "6,bestPlayers"
+        conn_q.put(msg)
+
+# best players
+class BestPlayers(wx.Frame):
+    def __init__(self):  # create games menu frame
+        wx.Frame.__init__(self, None, -1, 'Best Scores', size=(500, 450),
+                          pos=(150, 100))
+        self.SetBackgroundColour((224, 179, 255))
+
+        col = wx.BoxSizer(wx.VERTICAL)
+        col.AddSpacer(30)
+        row1 = wx.BoxSizer(wx.HORIZONTAL)
+        row1.AddSpacer(100)
+        lbl1 = wx.StaticText(self, label="Tic Tac Toe - top 3 players")
+        lbl1.SetFont(wx.Font(18, wx.ROMAN, wx.NORMAL, wx.BOLD))
+        row1.Add(lbl1)
+        col.Add(row1)
+
+        col.AddSpacer(5)
+        row2 = wx.BoxSizer(wx.HORIZONTAL)
+        row2.AddSpacer(80)
+        self.xo_grid = grid.Grid(self)
+        self.xo_grid.CreateGrid(3, 2)
+        self.set_grid_size(self.xo_grid)
+        row2.Add(self.xo_grid)
+        col.Add(row2)
+
+        col.AddSpacer(25)
+        row3 = wx.BoxSizer(wx.HORIZONTAL)
+        row3.AddSpacer(65)
+        lbl2 = wx.StaticText(self, label="Rock Paper Scissors - top 3 players")
+        lbl2.SetFont(wx.Font(18, wx.ROMAN, wx.NORMAL, wx.BOLD))
+        row3.Add(lbl2)
+        col.Add(row3)
+
+        col.AddSpacer(5)
+        row4 = wx.BoxSizer(wx.HORIZONTAL)
+        row4.AddSpacer(80)
+        self.rps_grid = grid.Grid(self)
+        self.rps_grid.CreateGrid(3, 2)
+        self.set_grid_size(self.rps_grid)
+
+        row4.Add(self.rps_grid)
+        col.Add(row4)
+
+        self.SetSizer(col)
+        self.Show()
+
+        pub.subscribe(self.listener, "update6")  # create a pubsub receiver
+
+    def set_grid_size(self, grid):
+        grid.DisableDragRowSize()
+        grid.DisableDragColSize()
+        grid.SetColLabelValue(0, "NAME")
+        grid.SetColLabelValue(1, "SCORE")
+        for i in range(2):
+            grid.SetRowSize(i, 30)
+            grid.SetColSize(i, 120)
+        grid.SetRowSize(2, 30)
+
+    def set_scores(self, players_list, grid):  # set best scores in the right table
+        counter = 0
+        num = len(players_list)/2
+        for i in range(int(num)):
+            for j in range(2):
+                grid.SetReadOnly(i, j, True)
+                grid.SetCellFont(i, j, wx.Font(16, wx.SWISS, wx.NORMAL, wx.BOLD))
+                grid.SetCellBackgroundColour(i, j,(206, 126, 206))
+                grid.SetCellValue(i, j, players_list[counter])
+                counter = counter + 1
+
+    def listener(self, msg):  # Listener function - Receives update messages
+        t = msg
+        tmp = t[len("server response") + 1:]
+        info = tmp.split(",")
+
+        if info[1] == "bestPlayers":
+            xo_players = info[2]
+            xo_players_list = xo_players.split(".")
+            xo_players_list.pop()
+            print("players: " + str(xo_players_list))
+            self.set_scores(xo_players_list, self.xo_grid)
+            rps_players = info[3]
+            rps_players_list = rps_players.split(".")
+            xo_players_list.pop()
+            print("players: " + str(rps_players_list))
+            self.set_scores(rps_players_list, self.rps_grid)
 
 if __name__ == "__main__":
     app = wx.App(False)

@@ -22,9 +22,13 @@ class HandleClient(Thread):
         data = "1,symbol," + s + "," + str(t)
         self.client_socket.send(data.encode('ascii'))
         # connect to data base
-        self.conn = sqlite3.connect('users.db', timeout=10,
-                                    check_same_thread=False)
-        self.users = users1.Users(self.conn)  # data base table
+        self.conn1 = sqlite3.connect('users.db', timeout=10,
+                                     check_same_thread=False)
+        self.users = users1.Users(self.conn1)  # data base table
+
+        self.conn2 = sqlite3.connect('wins.db', timeout=10,
+                                     check_same_thread=False)
+        self.wins = users1.Wins(self.conn2)  # data base table
 
     def run(self):
         while 1:
@@ -87,11 +91,25 @@ class HandleClient(Thread):
                     data = "1,rivalQuit"
                     self.client_socket.send(data.encode('ascii'))
 
+            if msg[1] == "win":  # player won the game
+                for i in HandleClient.clientsAndNames:
+                    if i[0] == self.client_socket:
+                        self.update(i[1])
+                        break
+
     @classmethod
     def broadcast(cls, msg, client_socket):  # send message to all the clients
         for sock in cls.clients:
             if sock != client_socket:
                 sock.send(msg)
+
+    def update(self, name):  # update nums of wins
+        cursor = self.conn2.execute("SELECT * from WINS")
+        for row in cursor:
+            if row[0] == name:
+                print("found name:" + name)
+                win = int(row[1])+1
+                self.wins.update_tic_tac_toe(name, str(win))
 
 
 class Server:

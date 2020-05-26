@@ -29,7 +29,10 @@ def client_recv(my_socket):
 def client_send(port):
     print("start client")
     my_socket = socket()
-    my_socket.connect(("127.0.0.1", port))  # create socket
+    f = open('configu.txt', 'r')
+    ip = f.read()
+    f.close
+    my_socket.connect((ip, port))  # create socket
 
     recv_thread = Thread(target=client_recv, args=(my_socket,))
     recv_thread.start()
